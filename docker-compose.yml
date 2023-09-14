@@ -2,8 +2,8 @@ version: '3'
 services:
   node-app:
     build:
-      context: .    
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile  # Use the Dockerfile with TLS/SSL support
     ports:
-      - "7443:3000"
-      - "80:3000"
+      - "443:443"  # Map host port 443 to container port 443 for HTTPS
+      - "7443:443"

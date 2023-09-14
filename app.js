@@ -1,14 +1,16 @@
 const express = require('express');
+const https = require('https'); // Require the 'https' module
+const fs = require('fs');
 const bodyParser = require('body-parser');
 
 const app = express();
-const port = 3000;
+const port = 443; // Use port 443 for HTTPS
 
 const authReturn = {
-    access_token : "eyJraWQiOiIxIiwiYWxnIjoiUlM1MTIifQ",
-    token_type  : "IHE-JWT",
-    expires_in : 9999,
-    userId  : 12345
+  access_token: "eyJraWQiOiIxIiwiYWxnIjoiUlM1MTIifQ",
+  token_type: "IHE-JWT",
+  expires_in: 9999,
+  userId: 12345
 }
 
 // Parse JSON requests
@@ -21,17 +23,25 @@ app.post('/api/echo', (req, res) => {
 });
 
 app.post('/delegate/token', (req, res) => {
-    console.log("token hit")
-    res.json(authReturn);
-  });
+  console.log("token hit")
+  res.json(authReturn);
+});
 
-  app.post('/HealthDataRepository/r4/:resource', (req, res) => {
-    const { resource } = req.params;
-    console.log("Resource hit : "+ resource)
-    res.json({ resource });
-  });
+app.post('/HealthDataRepository/r4/:resource', (req, res) => {
+  const { resource } = req.params;
+  console.log("Resource hit : " + resource)
+  res.json({ resource });
+});
 
-// Start the server
-app.listen(port, () => {
+// Load SSL/TLS certificates
+const privateKey = fs.readFileSync('cert-key.pem', 'utf8');
+const certificate = fs.readFileSync('cert.pem', 'utf8');
+const credentials = { key: privateKey, cert: certificate };
+
+// Create an HTTPS server
+const httpsServer = https.createServer(credentials, app);
+
+// Start the HTTPS server
+httpsServer.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
 });
