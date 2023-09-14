@@ -1,6 +1,7 @@
 version: '3'
 services:
   node-app:
+    container_name: api 
     build:
       context: .
       dockerfile: Dockerfile  # Use the Dockerfile with TLS/SSL support
